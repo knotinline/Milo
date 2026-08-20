@@ -12,7 +12,7 @@ hide_page_nav()
 if "provider" not in st.session_state:
     st.session_state.provider = "chatgpt"
 if "age_band" not in st.session_state:
-    st.session_state.age_band = "11-13"
+    st.session_state.age_band = "8-10"
 
 provider = st.session_state.provider
 engine = THEMES[provider]
@@ -64,7 +64,7 @@ if user_message:
         st.write(user_message)
     st.session_state.messages.append({"role": "user", "content": user_message})
 
-    input_decision = decide_for_input(user_message, age_band)
+    input_decision = decide_for_input(user_message, age_band, provider)
     st.session_state.logs.append({
         "stage": "Input",
         "timestamp": datetime.now().strftime("%H:%M:%S"),
@@ -80,7 +80,7 @@ if user_message:
         model_messages += st.session_state.messages[-6:]
         draft_answer = call_model(model_messages, provider)
 
-        output_decision = decide_for_output(draft_answer, age_band)
+        output_decision = decide_for_output(draft_answer, age_band, provider)
         st.session_state.logs.append({
             "stage": "Output",
             "timestamp": datetime.now().strftime("%H:%M:%S"),
