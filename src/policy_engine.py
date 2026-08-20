@@ -29,8 +29,8 @@ def safe_fallback(category: str) -> str:
     return "I can't provide that kind of help. I can help with a safer, educational version of the topic."
 
 
-def decide_for_input(text: str, age_band: str) -> SafetyDecision:
-    c: Classification = classify(text, age_band)
+def decide_for_input(text: str, age_band: str, provider: str = "chatgpt") -> SafetyDecision:
+    c: Classification = classify(text, age_band, provider, check_bypass_judge=True)
 
     if c.category == "bypass":
         return SafetyDecision("BLOCK", c.category, c.severity, safe_fallback(c.category), "; ".join(c.reasons))
@@ -46,8 +46,8 @@ def decide_for_input(text: str, age_band: str) -> SafetyDecision:
     return SafetyDecision("ALLOW", c.category, c.severity, "Allowed.", "; ".join(c.reasons))
 
 
-def decide_for_output(text: str, age_band: str) -> SafetyDecision:
-    c: Classification = classify(text, age_band)
+def decide_for_output(text: str, age_band: str, provider: str = "chatgpt") -> SafetyDecision:
+    c: Classification = classify(text, age_band, provider, check_bypass_judge=False)
 
     if c.severity == "high" or c.category == "bypass":
         return SafetyDecision("BLOCK", c.category, c.severity, safe_fallback(c.category), "; ".join(c.reasons))

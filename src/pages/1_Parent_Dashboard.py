@@ -188,7 +188,7 @@ with st.container(key="sidebar_settings"):
             st.rerun()
 
     age_options = ["8-10", "11-13", "14-16"]
-    current_age = st.session_state.get("age_band", "11-13")
+    current_age = st.session_state.get("age_band", "8-10")
     age_band = st.selectbox("Child age band", age_options, index=age_options.index(current_age))
     if age_band != current_age:
         st.session_state.age_band = age_band

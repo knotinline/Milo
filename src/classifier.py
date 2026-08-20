@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional
 
-from model_adapter import moderate
+from model_adapter import moderate, judge_bypass
 
 @dataclass
 class Classification:
@@ -61,7 +61,7 @@ AGE_BAND_THRESHOLDS = {
     "11-13": {"medium": 0.10, "high": 0.5},
     "14-16": {"medium": 0.15, "high": 0.7},
 }
-DEFAULT_AGE_BAND = "11-13"
+DEFAULT_AGE_BAND = "8-10"
 
 
 def _contains(text: str, terms: List[str]) -> List[str]:
@@ -80,13 +80,25 @@ def _moderation_signal(moderation: Optional[dict], category: str) -> tuple:
     return score, forced_high
 
 
-def classify(text: str, age_band: str = DEFAULT_AGE_BAND) -> Classification:
+def classify(
+    text: str,
+    age_band: str = DEFAULT_AGE_BAND,
+    provider: str = "chatgpt",
+    check_bypass_judge: bool = True,
+) -> Classification:
     low = text.lower()
     thresholds = AGE_BAND_THRESHOLDS.get(age_band, AGE_BAND_THRESHOLDS[DEFAULT_AGE_BAND])
 
     bypass = _contains(low, BYPASS_TERMS)
     if bypass:
         return Classification("bypass", "high", [f"Bypass/jailbreak term: {t}" for t in bypass])
+
+    if check_bypass_judge:
+        judged = judge_bypass(text, age_band, provider)
+        if judged and judged.get("is_bypass_attempt"):
+            severity = "high" if judged.get("confidence") == "high" else "medium"
+            reason = judged.get("reason", "Model judged this a bypass attempt.")
+            return Classification("bypass", severity, [f"Model judge: {reason}"])
 
     moderation = moderate(text)
     instructional = any(h in low for h in INSTRUCTIONAL_HINTS)
