@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict
+from typing import List, Dict, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,6 +31,22 @@ def _mock_response(messages: List[Dict[str, str]], provider: str) -> str:
     if "drugs" in low:
         return "Drugs are chemicals that change how the body or brain works. Some medicines are used safely with doctors, but illegal or misused drugs can be dangerous. It is best to ask a teacher, parent, or doctor for trusted information."
     return f"This is a safe demo response from {label} mock mode. Add an API key in .env to use the real {label} API."
+
+
+def moderate(text: str) -> Optional[Dict[str, Dict[str, float]]]:
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key or api_key == "your_key_here":
+        return None
+
+    from openai import OpenAI
+
+    client = OpenAI(api_key=api_key)
+    response = client.moderations.create(model="omni-moderation-latest", input=text)
+    result = response.results[0]
+    return {
+        "scores": result.category_scores.model_dump(),
+        "categories": result.categories.model_dump(),
+    }
 
 
 def call_model(messages: List[Dict[str, str]], provider: str) -> str:
