@@ -30,7 +30,7 @@ def safe_fallback(category: str) -> str:
 
 
 def decide_for_input(text: str, age_band: str) -> SafetyDecision:
-    c: Classification = classify(text)
+    c: Classification = classify(text, age_band)
 
     if c.category == "bypass":
         return SafetyDecision("BLOCK", c.category, c.severity, safe_fallback(c.category), "; ".join(c.reasons))
@@ -47,7 +47,7 @@ def decide_for_input(text: str, age_band: str) -> SafetyDecision:
 
 
 def decide_for_output(text: str, age_band: str) -> SafetyDecision:
-    c: Classification = classify(text)
+    c: Classification = classify(text, age_band)
 
     if c.severity == "high" or c.category == "bypass":
         return SafetyDecision("BLOCK", c.category, c.severity, safe_fallback(c.category), "; ".join(c.reasons))
