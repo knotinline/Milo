@@ -103,12 +103,16 @@ If no API key is present for the chosen engine, Milo uses a mock response so the
 
 ```text
 src/
-  app.py                 Streamlit Milo web app
-  policy_engine.py       Age policy and safety decisions
-  classifier.py          Lightweight rule-based classifier
-  model_adapter.py       ChatGPT/DeepSeek API adapter + mock fallback
-  theme.py               Brand accent styling per chosen model
-  policies.json          Parent/age-band rules
+  app.py                       Streamlit Milo web app
+  policy_engine.py             Age policy and safety decisions
+  classifier.py                Bypass/topic keyword rules + OpenAI moderation scoring,
+                                age-band-aware thresholds, LLM jailbreak judge
+  model_adapter.py             ChatGPT/DeepSeek API adapter, mock fallback,
+                                OpenAI moderation call, jailbreak-judge prompt
+  theme.py                     Brand accent styling per chosen model
+  policies.json                Parent/age-band rules
+  pages/
+    1_Parent_Dashboard.py      PIN-gated safety log, stats, and settings
 
 docs/
   architecture.md
