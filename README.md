@@ -117,6 +117,27 @@ docs/
   product_pitch.md
 ```
 
+
+
+## GRC and Regulatory Alignment
+
+Milo’s architecture already implements several controls that align with key German and EU compliance
+principles: parent-controlled age profiles, input/output safety checks, blocking of bypass attempts,
+escalation of serious safety concerns, and a parent-visible decision log. These measures support the
+child-safety and privacy-by-design objectives reflected in the GDPR/BDSG, JuSchG/JMStV, and, where
+applicable, DSA Article 28, particularly through age-appropriate safeguards, parental controls, and
+protection against harmful or development-impairing content.
+For AI governance, Milo’s policy layer around ChatGPT/DeepSeek and its pre- and post-processing
+controls are consistent with the risk-management direction of the EU AI Act, especially regarding
+protection of minors, transparency, human oversight, and safeguards against exploiting age-related
+vulnerabilities. However, Milo remains a proof of concept: before production use in Germany, stronger
+guardian authentication, privacy-preserving and time-limited logging, documented GDPR legal bases
+and parental authorisation where required, a DPIA, vendor/data-transfer controls, and a formal German
+youth-protection assessment should be implemented.
+
+
+
+
 ## Limitations
 
 This is a proof of concept. A production version would need stronger authentication, tamper-resistant deployment, content filtering for images/files/voice, privacy-preserving logs, multilingual classifiers, parental identity verification, jailbreak red-team testing, and legal/compliance review.
