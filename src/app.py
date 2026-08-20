@@ -29,7 +29,7 @@ html_block(
             <div class="live-indicator"><span class="live-dot"></span>System active</div>
         </div>
         <div class="muted">
-            Your AI homework buddy — a protected chat experience for kids.
+            Your AI learning buddy — a protected chat experience for kids.
         </div>
         <div class="status-row">
             <span class="status-pill">{engine['icon']} {engine['label']} engine</span>
