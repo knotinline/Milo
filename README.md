@@ -22,13 +22,12 @@ The system returns one of four decisions, visible to the parent via a dedicated 
 - `BLOCK`: do not send or show unsafe content.
 - `ESCALATE`: recommend trusted adult support for serious safety concerns.
 
-## High-level architectural review
+## Architectural review
 
 Milo is a **controlled AI chat client**, not a specific AI brand. A parent picks which AI engine powers Milo (ChatGPT or DeepSeek today) and has already blocked the official AI chat websites on the child's device/account. The child can only access this Milo web app.Instead of trusting the AI model to police itself, Milo places a policy layer around the model:
 
-```text
-Child -> Milo Web App -> Input Safety Check -> Chosen AI Engine (ChatGPT/DeepSeek) -> Output Safety Check -> Child
-```
+<img width="1788" height="606" alt="image" src="https://github.com/user-attachments/assets/617fa2c4-ac14-494c-90f9-f6c68ddbb4b7" />
+
 
 The child never receives direct access to the official AI provider's webpage, API key, system prompt, or safety settings — and the app never presents itself as being made by that provider.
 
@@ -103,12 +102,16 @@ If no API key is present for the chosen engine, Milo uses a mock response so the
 
 ```text
 src/
-  app.py                 Streamlit Milo web app
-  policy_engine.py       Age policy and safety decisions
-  classifier.py          Lightweight rule-based classifier
-  model_adapter.py       ChatGPT/DeepSeek API adapter + mock fallback
-  theme.py               Brand accent styling per chosen model
-  policies.json          Parent/age-band rules
+  app.py                       Streamlit Milo web app
+  policy_engine.py             Age policy and safety decisions
+  classifier.py                Bypass/topic keyword rules + OpenAI moderation scoring,
+                                age-band-aware thresholds, LLM jailbreak judge
+  model_adapter.py             ChatGPT/DeepSeek API adapter, mock fallback,
+                                OpenAI moderation call, jailbreak-judge prompt
+  theme.py                     Brand accent styling per chosen model
+  policies.json                Parent/age-band rules
+  pages/
+    1_Parent_Dashboard.py      PIN-gated safety log, stats, and settings
 
 docs/
   architecture.md
